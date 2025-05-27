@@ -1,36 +1,36 @@
+import re
 import random
 import string
 
-def password_strength(password):
+def check_password_strength(password):
     score = 0
     feedback = []
 
+    # Length Check
     if len(password) >= 8:
         score += 1
     else:
-        feedback.append("Password should be at least 8 characters long.")
+        feedback.append("❌ Password should be at least 8 characters long.")
 
-    if any(c.isupper() for c in password):
+    # Upper & Lowercase Check
+    if re.search(r"[A-Z]", password) and re.search(r"[a-z]", password):
         score += 1
     else:
-        feedback.append("Include at least one uppercase letter.")
+        feedback.append("❌ Include both uppercase and lowercase letters.")
 
-    if any(c.islower() for c in password):
+    # Digit Check
+    if re.search(r"\d", password):
         score += 1
     else:
-        feedback.append("Include at least one lowercase letter.")
+        feedback.append("❌ Add at least one number (0-9).")
 
-    if any(c.isdigit() for c in password):
+    # Special Character Check
+    if re.search(r"[!@#$%^&*]", password):
         score += 1
     else:
-        feedback.append("Include at least one digit.")
+        feedback.append("❌ Include at least one special character (!@#$%^&*).")
 
-    special_chars = "!@#$%^&*"
-    if any(c in special_chars for c in password):
-        score += 1
-    else:
-        feedback.append(f"Include at least one special character ({special_chars}).")
-
+    # Strength Rating
     if score <= 2:
         strength = "Weak"
     elif score <= 4:
@@ -66,10 +66,10 @@ def main():
         if pwd.lower() == "gen":
             print("Generated strong password:", generate_password())
             continue
-        strength, score, feedback = password_strength(pwd)
-        print(f"Strength: {strength} (Score: {score}/5)")
+        strength, score, feedback = check_password_strength(pwd)
+        print(f"Strength: {strength} (Score: {score}/4)")
         if strength == "Strong":
-            print("Your password is strong!")
+            print("✅ Your password is strong!")
         else:
             print("Suggestions to improve your password:")
             for f in feedback:
